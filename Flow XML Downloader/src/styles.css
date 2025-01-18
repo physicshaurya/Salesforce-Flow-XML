@@ -1,0 +1,45 @@
+/* Base body styling */
+body {
+  font-family: 'Salesforce Sans', Arial, sans-serif; /* Salesforce's standard font */
+  margin: 0;
+  padding: 0;
+  width: 300px;
+  text-align: center;
+  background-color: #f4f6f9; /* Light background color */
+  color: #16325c; /* Text color matching Salesforce's primary text color */
+}
+
+/* Header styling */
+h1 {
+  font-size: 20px;
+  margin-bottom: 20px;
+  color: #16325c; /* Salesforce blue for headings */
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+/* Button styling */
+button {
+  background-color: #0070d2; /* Salesforce blue button color */
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 4px; /* Rounded corners */
+  margin: 8px 5px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #005fb2; /* Darker blue on hover */
+}
+
+/* Success status message */
+#status {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #28a745; /* Green color for success messages */
+  font-weight: 600;
+}
+

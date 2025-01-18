@@ -1,0 +1,56 @@
+{
+  "manifest_version": 3,
+  "name": "Salesforce Flow MetaData Downloader",
+  "version": "1.0",
+  "description": "Download Salesforce flow MetaData with a single click directly from Salesforce Lightning.",
+  "permissions": [
+    "cookies",
+    "tabs",
+    "activeTab",
+    "scripting",
+    "identity",
+    "downloads",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://*.salesforce.com/*",
+    "https://*.salesforce-setup.com/*",
+    "https://*.force.com/*",
+    "https://*.cloudforce.com/*",
+    "https://*.visualforce.com/*",
+    "https://*.sfcrmapps.cn/*",
+    "https://*.sfcrmproducts.cn/*",
+    "https://*.salesforce.mil/*",
+    "https://*.force.mil/*",
+    "https://*.cloudforce.mil/*",
+    "https://*.visualforce.mil/*",
+    "https://*.crmforce.mil/*",
+    "https://*.force.com.mcas.ms/*"
+  ],
+  "action": {
+    "default_popup": "src/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png"
+    }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [],
+      "matches": ["https://*/*"],
+      "extension_ids": []
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png"
+  },
+  "background": {
+    "service_worker": "service.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://nimblazepvtltd2.lightning.force.com/*"],
+      "js": ["content.js"]
+    }
+  ]
+}
