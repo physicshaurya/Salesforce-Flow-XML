@@ -7,7 +7,14 @@ Work with salesforce flows like a pro.
 
 The Salesforce Flow MetaData Downloader is a Chrome extension that allows you to easily download or copy the metadata of Salesforce flows directly from the Salesforce Lightning interface. This tool is perfect for developers and administrators who need to work with flow definitions outside of Salesforce.
 
-## Installation
+## Installation to use (101)
+1. Navigate to the link : https://chrome.google.com/u/1/webstore/devconsole/e0fa2c4a-f04b-4645-92b2-c18e322cea91/bdonpnepbmgmhgciooglhfdnoepfnpkp
+2. Click on Add to Chrome button.
+3. Navigate to any flow.
+4. Click on the extention.
+5. Check if the flow name and version appearing is correct and dowload or copy the JSON.
+
+## Installation to modify (201)
 
 1. Download the Flow MetaData Downloader zip file.
 2. Open Chrome and navigate to `chrome://extensions/`
@@ -15,9 +22,7 @@ The Salesforce Flow MetaData Downloader is a Chrome extension that allows you to
 4. Click "Load unpacked" and select the extension folder
 5. The extension icon should now appear in your Chrome toolbar
 
-## Chrome Hosting coming soon : I will update the url here shortly.
-
-## Using the Extension
+## LINK : https://chrome.google.com/u/1/webstore/devconsole/e0fa2c4a-f04b-4645-92b2-c18e322cea91/bdonpnepbmgmhgciooglhfdnoepfnpkp/edit
 
 ### Accessing Flow Metadata
 
