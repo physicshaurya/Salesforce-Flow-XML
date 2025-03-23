@@ -7,25 +7,12 @@
     "cookies",
     "tabs",
     "activeTab",
-    "scripting",
-    "identity",
-    "downloads",
-    "storage"
+    "downloads"
   ],
   "host_permissions": [
     "https://*.salesforce.com/*",
-    "https://*.salesforce-setup.com/*",
     "https://*.force.com/*",
-    "https://*.cloudforce.com/*",
-    "https://*.visualforce.com/*",
-    "https://*.sfcrmapps.cn/*",
-    "https://*.sfcrmproducts.cn/*",
-    "https://*.salesforce.mil/*",
-    "https://*.force.mil/*",
-    "https://*.cloudforce.mil/*",
-    "https://*.visualforce.mil/*",
-    "https://*.crmforce.mil/*",
-    "https://*.force.com.mcas.ms/*"
+    "https://*.visualforce.com/*"
   ],
   "action": {
     "default_popup": "src/popup.html",
@@ -49,7 +36,10 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://nimblazepvtltd2.lightning.force.com/*"],
+      "matches": [
+        "https://*.lightning.force.com/*",
+        "https://*.salesforce.com/*"
+      ],
       "js": ["content.js"]
     }
   ]
