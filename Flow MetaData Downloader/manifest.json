@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "Salesforce Flow MetaData Downloader",
+  "version": "1.0",
+  "description": "Download Salesforce flow MetaData with a single click directly from Salesforce Lightning.",
+  "permissions": ["cookies", "tabs", "activeTab", "downloads"],
+  "host_permissions": [
+    "https://*.salesforce.com/*",
+    "https://*.force.com/*",
+    "https://*.visualforce.com/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  }
+}

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flow MetaData Downloader</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Flow MetaData Downloader</h1>
+    </header>
+    
+    <div class="flow-info">
+      <div id="loader" class="loader"></div>
+      <div id="flowNameContainer" class="hidden">
+        <h3>Flow: <span id="flowName">Loading...</span></h3>
+        <p>Version: <span id="flowVersion">-</span></p>
+      </div>
+      <div id="errorContainer" class="hidden error-container">
+        <p id="errorMessage">Error message here</p>
+      </div>
+    </div>
+    
+    <div class="actions">
+      <button id="downloadJsonBtn" class="btn primary" disabled>Download JSON</button>
+      <button id="copyJsonBtn" class="btn secondary" disabled>Copy JSON</button>
+    </div>
+    
+    <div id="statusContainer" class="status-container hidden">
+      <p id="status"></p>
+    </div>
+  </div>
+  
+  <script src="popup.js" type="module"></script>
+</body>
+</html>

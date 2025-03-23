@@ -1,0 +1,150 @@
+/* Base styles */
+:root {
+    --sf-blue: #0070d2;
+    --sf-blue-hover: #005fb2;
+    --sf-text: #16325c;
+    --sf-background: #f4f6f9;
+    --sf-success: #04844b;
+    --sf-error: #c23934;
+    --sf-border: #d8dde6;
+  }
+  
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    font-family: 'Salesforce Sans', Arial, sans-serif;
+    background-color: var(--sf-background);
+    color: var(--sf-text);
+    width: 320px;
+    overflow-x: hidden;
+  }
+  
+  .container {
+    padding: 16px;
+  }
+  
+  header {
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  
+  h1 {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.5;
+  }
+  
+  .flow-info {
+    background-color: white;
+    border: 1px solid var(--sf-border);
+    border-radius: 4px;
+    padding: 12px;
+    margin-bottom: 16px;
+    min-height: 80px;
+    position: relative;
+  }
+  
+  h3 {
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+  
+  .actions {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  
+  /* Button styles */
+  .btn {
+    flex: 1;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  .primary {
+    background-color: var(--sf-blue);
+    color: white;
+  }
+  
+  .primary:hover:not(:disabled) {
+    background-color: var(--sf-blue-hover);
+  }
+  
+  .secondary {
+    background-color: white;
+    color: var(--sf-blue);
+    border: 1px solid var(--sf-blue);
+  }
+  
+  .secondary:hover:not(:disabled) {
+    background-color: #f8f8f8;
+  }
+  
+  /* Status styles */
+  .status-container {
+    text-align: center;
+    padding: 8px;
+    border-radius: 4px;
+  }
+  
+  .status-container.success {
+    background-color: rgba(4, 132, 75, 0.1);
+  }
+  
+  .status-container.error {
+    background-color: rgba(194, 57, 52, 0.1);
+  }
+  
+  #status.success {
+    color: var(--sf-success);
+  }
+  
+  #status.error {
+    color: var(--sf-error);
+  }
+  
+  /* Loader */
+  .loader {
+    width: 24px;
+    height: 24px;
+    border: 3px solid rgba(0, 112, 210, 0.2);
+    border-radius: 50%;
+    border-top-color: var(--sf-blue);
+    animation: spin 1s linear infinite;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -12px;
+    margin-left: -12px;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  /* Utility classes */
+  .hidden {
+    display: none;
+  }
+  
+  .error-container {
+    background-color: rgba(194, 57, 52, 0.1);
+    color: var(--sf-error);
+    padding: 10px;
+    border-radius: 4px;
+    text-align: center;
+  }
