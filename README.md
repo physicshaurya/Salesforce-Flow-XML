@@ -9,11 +9,13 @@ The Salesforce Flow MetaData Downloader is a Chrome extension that allows you to
 
 ## Installation
 
-1. Download the extension files
+1. Download the Flow XML Downloader folder.
 2. Open Chrome and navigate to `chrome://extensions/`
 3. Enable "Developer mode" using the toggle in the top-right corner
 4. Click "Load unpacked" and select the extension folder
 5. The extension icon should now appear in your Chrome toolbar
+
+## Chrome Hosting coming soon : I will update the url here shortly.
 
 ## Using the Extension
 
