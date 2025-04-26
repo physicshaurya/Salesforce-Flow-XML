@@ -1,8 +1,10 @@
 {
+"update_url": "https://clients2.google.com/service/update2/crx",
+
   "manifest_version": 3,
   "name": "Salesforce Flow MetaData Downloader",
-  "version": "1.0",
-  "description": "Download Salesforce flow MetaData with a single click directly from Salesforce Lightning.",
+  "version": "1.1.2",
+  "description": "Download & Analyse Salesforce flow MetaData with a single click directly from Salesforce Lightning.",
   "permissions": ["cookies", "tabs", "activeTab", "downloads"],
   "host_permissions": [
     "https://*.salesforce.com/*",
