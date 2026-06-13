@@ -1,5 +1,6 @@
 import SFConnection from "./sf-connection.js";
 import FlowService from "./flow-service.js";
+import { track } from "./analytics.js";
 
 // UI Elements
 const elements = {
@@ -71,7 +72,9 @@ async function handleFlowSelection(flowVersionId) {
     if (!currentFlow || !currentFlow.Metadata)
       throw new Error("Failed to load metadata.");
     showFlowInfo(currentFlow);
+    track("flow_loaded");
   } catch (e) {
+    track("flow_load_failed");
     showError(e.message);
   }
 }
@@ -309,6 +312,7 @@ function fixNomenclature(originalMetadata) {
 
 function setupActionListeners() {
   elements.downloadBtn.addEventListener("click", async () => {
+    track("click_download_json");
     try {
       const success = await flowService.downloadMetadata(currentFlow);
       showStatus(
@@ -321,6 +325,7 @@ function setupActionListeners() {
   });
 
   elements.copyBtn.addEventListener("click", async () => {
+    track("click_copy_json");
     try {
       const success = await flowService.copyMetadataToClipboard(
         currentFlow.Metadata
@@ -332,6 +337,7 @@ function setupActionListeners() {
   });
 
   elements.describeFlowBtn.addEventListener("click", () => {
+    track("click_describe");
     try {
       const success = flowService.describeThisFlow(currentFlow.Metadata);
       showStatus(
@@ -344,6 +350,7 @@ function setupActionListeners() {
   });
 
   elements.runAnalysisBtn.addEventListener("click", () => {
+    track("click_run_analysis");
     try {
       const issues = runFlowAnalysis(currentFlow.Metadata);
       displayFlowAnalysis(issues);
@@ -353,6 +360,7 @@ function setupActionListeners() {
   });
 
   elements.fixNomenclatureBtn.addEventListener("click", async () => {
+    track("click_fix_nomenclature");
     try {
       const { renamedElements, updatedMetadata } = fixNomenclature(
         currentFlow.Metadata
@@ -363,6 +371,7 @@ function setupActionListeners() {
         const isActive = currentFlow.Status === "Active";
 
         if (isActive) {
+          track("fix_blocked_active");
           showStatus(
             `The current version of flow is active kindly create a new version to fix the nomenclature`,
             false
@@ -373,6 +382,7 @@ function setupActionListeners() {
             updatedMetadata,
             isActive
           );
+          track("fix_deployed");
           showStatus(
             `Fixed nomenclature for ${renamedElements.length} elements:\n${renamedElements.map(e => `${e.oldName} → ${e.newName} (${e.type})`).join('\n')}`,
             true
@@ -383,6 +393,7 @@ function setupActionListeners() {
           }, 3000);
         }
       } else {
+        track("fix_no_changes");
         showStatus("No elements needed nomenclature fixes.", true);
       }
     } catch (e) {
@@ -464,12 +475,14 @@ function displayFlowAnalysis(issues) {
 
 async function initializePopup() {
   try {
+    track("popup_open");
     const connection = await new SFConnection().init();
     if (!connection) throw new Error("Failed to connect to Salesforce.");
     flowService = new FlowService(connection);
 
     const flowVersionId = await flowService.getFlowIdFromCurrentTab();
     if (!flowVersionId) {
+      track("entry_search");
       elements.searchFlowSection.style.display = "block";
       elements.flowDownloadSection.style.display = "none";
       searchFlows(elements.flowSearchInput.value.trim());
@@ -483,6 +496,7 @@ async function initializePopup() {
       return;
     }
 
+    track("entry_flow_on_tab");
     await handleFlowSelection(flowVersionId);
     setupActionListeners();
   } catch (error) {

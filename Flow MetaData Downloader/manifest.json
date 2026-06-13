@@ -3,9 +3,9 @@
 
   "manifest_version": 3,
   "name": "Salesforce Flow MetaData Downloader",
-  "version": "3.0.0.2",
+  "version": "3.0.1.0",
   "description": "Download & Analyse Salesforce flow MetaData with a single click directly from Salesforce Lightning.",
-  "permissions": ["cookies", "tabs", "activeTab", "downloads"],
+  "permissions": ["cookies", "tabs", "activeTab", "downloads", "storage"],
   "host_permissions": [
     "https://*.salesforce.com/*",
     "https://*.force.com/*",
