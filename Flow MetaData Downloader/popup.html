@@ -1,66 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flow MetaData Downloader</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Flow MetaData Downloader</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
+  <body>
+    <div class="container">
+      <!-- <header>
+        <h1>Flow MetaData Downloader</h1>
+      </header> -->
 
-<body>
-  <div class="container">
-    <header>
-      <h1>Flow MetaData Downloader</h1>
-    </header>
-
-    <div class="flow-info">
-      <div id="loader" class="loader"></div>
-      <div id="flowNameContainer" class="hidden">
-        <h3>Flow: <span id="flowName">Loading...</span></h3>
-        <p>Version: <span id="flowVersion">-</span></p>
+      <!-- When flow is not opened already search and select the flow -->
+      <div id="searchFlowSection" style="display: none">
+        <h3>Search Flow</h3>
+        <input
+          type="text"
+          id="flowSearchInput"
+          placeholder="Enter flow name..."
+        />
+        <div id="flowSearchResults"></div>
       </div>
-      <div id="errorContainer" class="hidden error-container">
-        <p id="errorMessage">Error message here</p>
+
+      <div id="flowDownloadSection">
+        <div class="flow-info">
+          <div id="loader" class="loader"></div>
+          <div id="flowNameContainer" class="hidden">
+            <h3>Flow: <span id="flowName">Loading...</span></h3>
+            <p>Version: <span id="flowVersion">-</span></p>
+          </div>
+          <div id="errorContainer" class="hidden error-container">
+            <p id="errorMessage">Error message here</p>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="downloadJsonBtn" class="btn primary" disabled>
+            Download JSON
+          </button>
+          <button id="copyJsonBtn" class="btn secondary" disabled>
+            Copy JSON
+          </button>
+          <button id="describeFlowBtn" class="btn primary" disabled>
+            Copy to Describe
+          </button>
+        </div>
+
+        <div id="statusContainer" class="status-container hidden">
+          <p id="status"></p>
+        </div>
+
+        <div class="actions">
+          <button id="fixNomenclatureBtn" class="btn primary" disabled>
+            Fix Nomenclature
+          </button>
+          <!--Btn for analysis running-->
+          <button id="runAnalysisBtn" class="btn primary" disabled>
+            Run Analysis
+          </button>
+        </div>
+
+        <!-- Section for Flow Analysis Results -->
+        <div id="analysisContainer" class="hidden">
+          <h2>Flow Analysis Report</h2>
+          <table id="analysisTable" class="hidden">
+            <thead>
+              <tr>
+                <!-- <th>Severity</th> -->
+                <th>Issue</th>
+                <th>Details</th>
+                <th>Elements</th>
+              </tr>
+            </thead>
+            <tbody id="analysisResults">
+              <!-- Analysis results will be inserted here dynamically -->
+            </tbody>
+          </table>
+          <div id="no-issues" class="status-container success hidden">
+            No issues detected in the flow
+          </div>
+          <!-- When no issues are detected -->
+        </div>
       </div>
     </div>
 
-    <div class="actions">
-      <button id="downloadJsonBtn" class="btn primary" disabled>Download JSON</button>
-      <button id="copyJsonBtn" class="btn secondary" disabled>Copy JSON</button>
-      <button id="describeFlowBtn" class="btn primary" disabled>Copy to Describe</button>
-    </div>
-
-    <div id="statusContainer" class="status-container hidden">
-      <p id="status"></p>
-    </div>
-
-    <div class="actions">
-      <button id="runAnalysisBtn" class="btn primary">Run Analysis</button> <!--Btn for analysis running-->
-    </div>
-
-    <!-- Section for Flow Analysis Results -->
-    <div id="analysisContainer" class="hidden">
-      <h2>Flow Analysis Report</h2>
-      <table id="analysisTable" class="hidden">
-        <thead>
-          <tr>
-            <!-- <th>Severity</th> -->
-            <th>Issue</th>
-            <th>Details</th>
-            <th>Elements</th>
-          </tr>
-        </thead>
-        <tbody id="analysisResults">
-          <!-- Analysis results will be inserted here dynamically -->
-        </tbody>
-      </table>
-      <div id="no-issues" class="status-container success hidden">No issues detected in the flow</div>
-      <!-- When no issues are detected -->
-    </div>
-  </div>
-
-  <script src="popup.js" type="module"></script>
-</body>
-
+    <script src="popup.js" type="module"></script>
+  </body>
 </html>

@@ -33,10 +33,6 @@ export default class FlowService {
       const flowId =
         url.searchParams.get("flowId") || url.searchParams.get("flowDefId");
 
-      if (!flowId) {
-        throw new Error("No Flow ID found in URL");
-      }
-
       return flowId;
     } catch (error) {
       console.error("Error getting Flow ID:", error);
@@ -81,6 +77,137 @@ export default class FlowService {
       console.error("Error fetching flow:", error);
       throw error;
     }
+  }
+
+  /**
+   * Fetch all versions of a flow definition from Salesforce
+   * @param {string} flowDefinitionId - The ID of the flow definition (starts with '300')
+   * @returns {Promise<Array<Object>>} - Array of flow versions sorted by version number (descending)
+   */
+  async fetchFlowVersions(flowDefinitionId) {
+    try {
+      if (!flowDefinitionId || !flowDefinitionId.startsWith("300")) {
+        throw new Error(
+          "A valid Flow Definition ID (starts with '300') is required."
+        );
+      }
+
+      const apiVersion = this.#connection.getApiVersion();
+      const query = `
+      /services/data/${apiVersion}/tooling/query/?q=
+      SELECT+Id,+VersionNumber,+Status+
+      FROM+Flow+
+      WHERE+DefinitionId='${flowDefinitionId}'
+      ORDER+BY+VersionNumber+DESC
+    `.replace(/\s+/g, "");
+
+      const result = await this.#connection.get(query);
+
+      if (!result.records || result.records.length === 0) {
+        throw new Error(
+          `No versions found for Flow Definition: ${flowDefinitionId}`
+        );
+      }
+
+      return result.records; // Each record includes Id, VersionNumber, Status
+    } catch (error) {
+      console.error("Error fetching flow versions:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Fetch all flow definitions from Salesforce
+   * @returns {Promise<Map<string, string>>} - A map of flow names (key) and flow IDs (value)
+   */
+  async fetchAllFlowDefinitions() {
+    try {
+      const apiVersion = this.#connection.getApiVersion();
+
+      // Query to get all Flow Definitions (which have Flow ID starting with '300')
+      const query = `/services/data/${apiVersion}/tooling/query/?q=SELECT Id, DeveloperName FROM FlowDefinition`;
+      const result = await this.#connection.get(query);
+
+      // Create a map of flow name (DeveloperName) and flow ID
+      const flowMap = new Map();
+      if (result.records && result.records.length > 0) {
+        result.records.forEach((flowDefinition) => {
+          const flowId = flowDefinition.Id;
+          const flowName = flowDefinition.DeveloperName;
+          flowMap.set(flowName, flowId);
+        });
+      }
+
+      return flowMap;
+    } catch (error) {
+      console.error("Error fetching flow definitions:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get Flow Version ID (301) from Flow Definition ID (300) and version number
+   * @param {string} flowDefinitionId - Flow Definition ID (starts with '300')
+   * @param {number} versionNumber - Version number of the flow
+   * @returns {Promise<string>} - Flow Version ID (starts with '301')
+   */
+  async getFlowVersionId(flowDefinitionId, versionNumber) {
+    try {
+      if (!flowDefinitionId || !flowDefinitionId.startsWith("300")) {
+        throw new Error(
+          "A valid Flow Definition ID (starts with '300') is required."
+        );
+      }
+
+      if (!versionNumber || versionNumber < 1) {
+        throw new Error("A valid version number is required.");
+      }
+
+      const apiVersion = this.#connection.getApiVersion();
+      const query = `
+        /services/data/${apiVersion}/tooling/query/?q=
+        SELECT+Id+
+        FROM+Flow+
+        WHERE+DefinitionId='${flowDefinitionId}'+AND+VersionNumber=${versionNumber}
+      `.replace(/\s+/g, "");
+
+      const result = await this.#connection.get(query);
+
+      if (!result.records || result.records.length === 0) {
+        throw new Error(
+          `No flow version found for Definition ID ${flowDefinitionId} and version ${versionNumber}`
+        );
+      }
+
+      return result.records[0].Id;
+    } catch (error) {
+      console.error("Error getting flow version ID:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get the latest Flow Version ID by created date
+   * @param {string} flowDefinitionId - Flow Definition ID (starts with '300')
+   * @returns {Promise<string>} - Latest Flow Version ID
+   */
+  async getLatestFlowVersionId(flowDefinitionId) {
+    const apiVersion = this.#connection.getApiVersion();
+    const query = `
+      /services/data/${apiVersion}/tooling/query/?q=
+      SELECT+Id+
+      FROM+Flow+
+      WHERE+DefinitionId='${flowDefinitionId}'
+      ORDER+BY+CreatedDate+DESC
+      LIMIT+1
+    `.replace(/\s+/g, "");
+
+    const result = await this.#connection.get(query);
+    return result.records[0].Id;
+  }
+
+  async baseUrl() {
+    return this.#connection.getBaseUrl();
   }
 
   /**
@@ -195,6 +322,32 @@ export default class FlowService {
     }
   }
 
+  /**
+   * Deploy flow metadata to Salesforce
+   * @param {Object} flow - Flow object with metadata
+   * @param {Object} updatedMetadata - Updated Metadata of the flow 
+   * @param {boolean} createNewVersion - Whether to create a new version
+   * @returns {Promise<Object>} - The deployed flow version id
+   */
+  async deployFlow(flow,updatedMetadata, createNewVersion = false) {
+    try {
+      if (!flow || !updatedMetadata) {
+        throw new Error("Invalid data to deploy flow");
+      }
+
+      const apiVersion = this.#connection.getApiVersion();
+      const endpoint = `/services/data/${apiVersion}/tooling/sobjects/Flow/${flow.Id}`;
+
+        await this.#connection.patch(endpoint, {
+          Metadata: updatedMetadata,
+        });
+        return await this.getFlowVersionId(flow.DefinitionId, flow.VersionNumber);
+    } catch (error) {
+      console.error("Error deploying flow:", error);
+      throw error;
+    }
+  }
+
   // Helper function to dml and soql element finding function after this.
   findElementsInsideLoops(flowJson) {
     if (!flowJson) {
@@ -298,7 +451,7 @@ export default class FlowService {
    */
   findDMLElementsInsideLoops(flowJson) {
     const { dmlElements } = this.findElementsInsideLoops(flowJson);
-    return {dmlElements}; // Returning only DML elements
+    return { dmlElements }; // Returning only DML elements
   }
 
   /**
@@ -312,38 +465,67 @@ export default class FlowService {
    */
   findSOQLInsideLoops(flowJson) {
     const { recordLookups } = this.findElementsInsideLoops(flowJson);
-    return {recordLookups}; // Returning only record lookups as SOQL elements
+    return { recordLookups }; // Returning only record lookups as SOQL elements
   }
 
   /**
-   * Finds unused variables in a Salesforce Flow JSON.
+   * Finds unused named elements in a Salesforce Flow JSON.
    *
    * @param {Object} flowJson - The JSON representation of the Salesforce Flow.
    * @param {Array} [flowJson.variables=[]] - Array of defined variables in the flow.
-   * @param {Array} [flowJson.assignments=[]] - Array of assignment elements in the flow.
-   * @param {Array} [flowJson.recordCreates=[]] - Array of record creation elements.
-   * @param {Array} [flowJson.recordUpdates=[]] - Array of record update elements.
-   * @param {Array} [flowJson.recordLookups=[]] - Array of record lookup elements.
-   * @param {Array} [flowJson.decisions=[]] - Array of decision elements.
-   * @returns {Array} - An array of unused variable names.
+   * @param {Array} [flowJson.textTemplates=[]] - Array of defined text templates in the flow.
+   * @returns {Object} - A dictionary of unused elements grouped by type (e.g., { unusedVariables: [...], unusedTextTemplates: [...] }).
    */
-  findUnusedVariables(flowJson) {
-    // Extract all defined variable names
-    const variableNames = new Set(
-      flowJson.variables.map((variable) => variable.name)
-    );
+  findUnusedItems(flowJson) {
+    // Define resource keys you want to check for unused references
+    const resourceKeys = [
+      "variables",
+      "textTemplates",
+      "formulas",
+      "constants",
+      "choices",
+      "dynamicChoiceSets",
+      // 'screens',
+      // 'loops',
+      // 'assignments',
+      // 'decisions',
+      // 'recordCreates',
+      // 'recordUpdates',
+      // 'recordLookups',
+      // 'subflows',
+      // 'apexPluginCalls',
+      // 'customErrors'
+    ];
 
-    // Clone the flow JSON and remove the 'variables' key
+    const unusedItems = {};
+
+    // Extract only the relevant items from the flowJson
+    const resources = {};
+    resourceKeys.forEach((key) => {
+      resources[key] = flowJson[key] || [];
+    });
+
+    // Clone the flow JSON and remove the tracked resource keys
     const filteredJson = { ...flowJson };
-    delete filteredJson.variables;
+    resourceKeys.forEach((key) => {
+      delete filteredJson[key];
+    });
 
-    // Convert the filtered JSON to a string
+    // Convert remaining flow JSON to string
     const flowJsonString = JSON.stringify(filteredJson);
 
-    // Find variables that are defined but not referenced anywhere else in the JSON
-    return [...variableNames].filter(
-      (varName) => !flowJsonString.includes(varName)
-    );
+    // Find unused items for each resource type
+    Object.entries(resources).forEach(([key, items]) => {
+      const unused = items
+        .map((item) => item.name)
+        .filter((name) => !flowJsonString.includes(name));
+
+      // Store with descriptive keys like "unusedVariables", "unusedTextTemplates"
+      const label = `unused${key.charAt(0).toUpperCase()}${key.slice(1)}`;
+      unusedItems[label] = unused;
+    });
+
+    return unusedItems;
   }
 
   /**
