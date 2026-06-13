@@ -12,8 +12,8 @@
  * the extension in Google's "anonymous usage analytics -> no consent" category.
  */
 
-const MEASUREMENT_ID = "G-XXXXXXXXXX"; // TODO: replace with the GA4 Web data stream Measurement ID
-const API_SECRET = "XXXXXXXXXXXXXXXX"; // TODO: replace with the Measurement Protocol API secret
+const MEASUREMENT_ID = "G-0JLWRD0KWG"; // GA4 Web data stream "Extension popup"
+const API_SECRET = "Y8h_dxt6SJWT2OQqup48Sg"; // Measurement Protocol API secret
 const GA_ENDPOINT = "https://www.google-analytics.com/mp/collect";
 
 const SESSION_EXPIRATION_MS = 30 * 60 * 1000; // 30 minutes of inactivity
